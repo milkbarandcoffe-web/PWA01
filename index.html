@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>PWAPP</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+html,body{margin:0;height:100%;background:#0d1117;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+#f{position:fixed;top:0;left:0;width:100%;height:100%;border:0;display:block}
+#mb{position:fixed;top:6px;right:6px;z-index:9;width:30px;height:30px;border-radius:15px;border:0;background:#2da44e;color:#fff;font-size:16px;font-weight:bold;opacity:.55;padding:0}
+#mn{display:none;position:fixed;top:42px;right:6px;z-index:9;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:6px;min-width:190px}
+#mn button{display:block;width:100%;margin:4px 0;padding:11px;border:0;border-radius:8px;color:#fff;font-size:14px;font-weight:bold;background:#2da44e}
+#mn .b{background:#1f6feb}#mn .x{background:#da3633}
+#ms{color:#c9d1d9;font-size:11px;padding:2px 4px}
+</style></head><body>
+<iframe id="f" allow="geolocation; microphone; camera; autoplay; clipboard-write; fullscreen" allowfullscreen></iframe>
+<button id="mb" type="button">&#9776;</button>
+<div id="mn"><button type="button" class="b" id="bi">INSTALLA SULLA HOME</button>
+<button type="button" class="b" id="bs">SCHERMO INTERO</button>
+<button type="button" id="br">RICARICA</button>
+<button type="button" class="x" id="bc">CHIUDI APP</button><div id="ms"></div></div>
+<script>
+var U="https://script.google.com/macros/s/AKfycbyKA31y1DVounPopnAS9LackRS0p9aXLNVZ_J91exSGPyV73B-rJVnwt5057z1mbhRg/exec";
+var f=document.getElementById("f"),mb=document.getElementById("mb"),mn=document.getElementById("mn"),ms=document.getElementById("ms"),dp=null;
+f.src=U;
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}
+var st=window.matchMedia("(display-mode: standalone)").matches||window.matchMedia("(display-mode: fullscreen)").matches||window.navigator.standalone;
+if(st){document.getElementById("bi").style.display="none";document.getElementById("bs").style.display="none";}
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;});
+window.addEventListener("appinstalled",function(){ms.textContent="Installata. Cercala nella Home.";});
+function ap(){mn.style.display="block";mb.innerHTML="&times;";}
+function ch(){mn.style.display="none";mb.innerHTML="&#9776;";ms.textContent="";}
+mb.onclick=function(e){e.stopPropagation();if(mn.style.display==="block")ch();else ap();};
+mn.onclick=function(e){e.stopPropagation();};
+document.addEventListener("click",ch);
+document.getElementById("bi").onclick=function(){if(dp){dp.prompt();dp=null;ch();}else{ms.textContent="Menu del browser, poi Installa app o Aggiungi a schermata Home.";}};
+document.getElementById("bs").onclick=function(){var d=document.documentElement;try{if(document.fullscreenElement){document.exitFullscreen();ch();}else if(d.requestFullscreen){d.requestFullscreen();ch();}else{ms.textContent="Schermo intero non disponibile.";}}catch(x){ms.textContent="Schermo intero non disponibile.";}};
+document.getElementById("br").onclick=function(){ch();f.src=U;};
+document.getElementById("bc").onclick=function(){ch();try{window.close();}catch(x){}setTimeout(function(){document.body.innerHTML="<div style=\"color:#c9d1d9;padding:40px;text-align:center\">Puoi chiudere questa app.</div>";},300);};
+</script></body></html>
